@@ -14,6 +14,9 @@ const PRODUCT_COLORS: Record<string, string> = {
   api: '#f59e0b',
 }
 
+// Start calendar at the most recent release date
+const mostRecentDate = releases.reduce((latest, r) => r.date > latest ? r.date : latest, releases[0].date)
+
 export default function CalendarView() {
   const [selected, setSelected] = useState<Release | null>(null)
 
@@ -33,13 +36,16 @@ export default function CalendarView() {
           {Object.entries(PRODUCT_COLORS).map(([product, color]) => (
             <div key={product} className="flex items-center gap-1.5">
               <div className="w-3 h-3 rounded-full" style={{ backgroundColor: color }} />
-              <span className="text-gray-600 capitalize">{product === 'claude-code' ? 'Claude Code' : product === 'api' ? 'API Features' : 'Claude Models'}</span>
+              <span className="text-gray-600 capitalize">
+                {product === 'claude-code' ? 'Claude Code' : product === 'api' ? 'API Features' : 'Claude Models'}
+              </span>
             </div>
           ))}
         </div>
         <FullCalendar
           plugins={[dayGridPlugin, timeGridPlugin, multiMonthPlugin, interactionPlugin]}
           initialView="dayGridMonth"
+          initialDate={mostRecentDate}
           headerToolbar={{
             left: 'prev,next today',
             center: 'title',
